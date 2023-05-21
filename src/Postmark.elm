@@ -1,5 +1,6 @@
 module Postmark exposing
     ( ApiKey
+    , Error(..)
     , PostmarkEmailBody
     , PostmarkSend
     , sendEmail
@@ -10,22 +11,26 @@ module Postmark exposing
 import Email.Html
 import EmailAddress exposing (EmailAddress)
 import Http
+import Internal
 import Json.Decode as D
 import Json.Encode as E
-import List.Nonempty
+import List.Nonempty exposing (Nonempty)
 import String.Nonempty exposing (NonemptyString)
 import Task exposing (Task)
 
 
+endpoint : String
 endpoint =
     "https://api.postmarkapp.com"
 
 
+{-| A SendGrid API key. In order to send an email you must have one of these (see the readme for how to get one).
+-}
 type ApiKey
     = ApiKey String
 
 
-{-| Create an API key from a raw string.
+{-| Create an API key from a raw string (see the readme for how to get one).
 -}
 apiKey : String -> ApiKey
 apiKey apiKey_ =
@@ -44,14 +49,25 @@ type PostmarkEmailBody
 
 type alias PostmarkSend =
     { from : { name : String, email : EmailAddress }
-    , to : List.Nonempty.Nonempty { name : String, email : EmailAddress }
+    , to : Nonempty { name : String, email : EmailAddress }
     , subject : NonemptyString
     , body : PostmarkEmailBody
     , messageStream : String
     }
 
 
-sendEmailTask : ApiKey -> PostmarkSend -> Task Http.Error PostmarkSendResponse
+{-| Possible error codes we might get back when trying to send an email.
+Some are just normal HTTP errors and others are specific to the Postmark API.
+-}
+type Error
+    = UnknownError { statusCode : Int, body : String }
+    | PostmarkError { errorCode : Int, message : String }
+    | NetworkError
+    | Timeout
+    | BadUrl String
+
+
+sendEmailTask : ApiKey -> PostmarkSend -> Task Error ()
 sendEmailTask (ApiKey token) d =
     let
         httpBody =
@@ -74,7 +90,7 @@ sendEmailTask (ApiKey token) d =
         }
 
 
-sendEmail : (Result Http.Error PostmarkSendResponse -> msg) -> ApiKey -> PostmarkSend -> Cmd msg
+sendEmail : (Result Error () -> msg) -> ApiKey -> PostmarkSend -> Cmd msg
 sendEmail msg token d =
     sendEmailTask token d |> Task.attempt msg
 
@@ -93,23 +109,21 @@ emailToString address =
         EmailAddress.toString address.email
 
     else
-        address.name ++ " <" ++ EmailAddress.toString address.email ++ ">"
+        String.filter (\char -> char /= '<' || char /= '>') address.name
+            ++ " <"
+            ++ EmailAddress.toString address.email
+            ++ ">"
 
 
 type alias PostmarkSendResponse =
-    { to : String
-    , submittedAt : String
-    , messageId : String
-    , errorCode : Int
+    { errorCode : Int
     , message : String
     }
 
 
+decodePostmarkSendResponse : D.Decoder PostmarkSendResponse
 decodePostmarkSendResponse =
-    D.map5 PostmarkSendResponse
-        (D.field "To" D.string)
-        (D.field "SubmittedAt" D.string)
-        (D.field "MessageID" D.string)
+    D.map2 PostmarkSendResponse
         (D.field "ErrorCode" D.int)
         (D.field "Message" D.string)
 
@@ -128,7 +142,7 @@ type alias PostmarkTemplateSend =
     }
 
 
-sendTemplateEmail : PostmarkTemplateSend -> Task Http.Error PostmarkTemplateSendResponse
+sendTemplateEmail : PostmarkTemplateSend -> Task Error ()
 sendTemplateEmail d =
     let
         httpBody =
@@ -152,20 +166,14 @@ sendTemplateEmail d =
 
 
 type alias PostmarkTemplateSendResponse =
-    { to : String
-    , submittedAt : String
-    , messageId : String
-    , errorCode : String
+    { errorCode : Int
     , message : String
     }
 
 
 decodePostmarkTemplateSendResponse =
-    D.map5 PostmarkTemplateSendResponse
-        (D.field "To" D.string)
-        (D.field "SubmittedAt" D.string)
-        (D.field "MessageID" D.string)
-        (D.field "ErrorCode" D.string)
+    D.map2 PostmarkTemplateSendResponse
+        (D.field "ErrorCode" D.int)
         (D.field "Message" D.string)
 
 
@@ -177,35 +185,43 @@ bodyToJsonValues : PostmarkEmailBody -> List ( String, E.Value )
 bodyToJsonValues body =
     case body of
         BodyHtml html ->
-            [ ( "HtmlBody", E.string <| Tuple.first <| Email.Html.toString html ) ]
+            [ ( "HtmlBody", E.string <| Tuple.first <| Internal.toString html ) ]
 
         BodyText text ->
             [ ( "TextBody", E.string text ) ]
 
         BodyBoth html text ->
-            [ ( "HtmlBody", E.string <| Tuple.first <| Email.Html.toString html )
+            [ ( "HtmlBody", E.string <| Tuple.first <| Internal.toString html )
             , ( "TextBody", E.string text )
             ]
 
 
-jsonResolver : D.Decoder a -> Http.Resolver Http.Error a
+jsonResolver : D.Decoder { a | errorCode : Int, message : String } -> Http.Resolver Error ()
 jsonResolver decoder =
-    Http.stringResolver <|
-        \response ->
+    Http.stringResolver
+        (\response ->
             case response of
-                Http.GoodStatus_ _ body ->
-                    D.decodeString decoder body
-                        |> Result.mapError D.errorToString
-                        |> Result.mapError Http.BadBody
+                Http.GoodStatus_ metadata body ->
+                    case D.decodeString decoder body of
+                        Ok json ->
+                            if json.errorCode == 0 then
+                                Ok ()
+
+                            else
+                                PostmarkError { errorCode = json.errorCode, message = json.message } |> Err
+
+                        Err _ ->
+                            UnknownError { statusCode = metadata.statusCode, body = body } |> Err
 
                 Http.BadUrl_ message ->
-                    Err (Http.BadUrl message)
+                    Err (BadUrl message)
 
                 Http.Timeout_ ->
-                    Err Http.Timeout
+                    Err Timeout
 
                 Http.NetworkError_ ->
-                    Err Http.NetworkError
+                    Err NetworkError
 
-                Http.BadStatus_ metadata _ ->
-                    Err (Http.BadStatus metadata.statusCode)
+                Http.BadStatus_ metadata body ->
+                    Err (UnknownError { statusCode = metadata.statusCode, body = body })
+        )
