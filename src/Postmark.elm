@@ -11,6 +11,8 @@ module Postmark exposing
     , sendEmailsTask
     )
 
+import Bytes exposing (Bytes)
+import Dict exposing (Dict)
 import Email.Html
 import EmailAddress exposing (EmailAddress)
 import Http
@@ -20,6 +22,7 @@ import Json.Encode as E
 import List.Nonempty exposing (Nonempty(..))
 import String.Nonempty exposing (NonemptyString)
 import Task exposing (Task)
+import VendoredBase64
 
 
 endpoint : String
@@ -56,6 +59,7 @@ type alias PostmarkSend =
     , subject : NonemptyString
     , body : PostmarkEmailBody
     , messageStream : String
+    , attachments : Dict String { content : String, mimeType : String }
     }
 
 
@@ -123,6 +127,44 @@ sendEmail msg token d =
 sendEmails : (Result SendEmailsError () -> msg) -> ApiKey -> Nonempty PostmarkSend -> Cmd msg
 sendEmails msg token d =
     sendEmailsTask token d |> Task.attempt msg
+
+
+{-| Attach files to the email. These will usually appear at the bottom of the email.
+
+    import Bytes exposing (Bytes)
+    import SendGrid
+
+    attachPngImage : String -> Bytes -> Email -> Email
+    attachPngImage name image email =
+        SendGrid.addAttachments
+            (Dict.fromList
+                [ ( name ++ ".png"
+                  , { content = image
+                    , mimeType = "image/png"
+                    }
+                  )
+                ]
+            )
+            email
+
+If you want to include an image file within the body of your email, use `Email.Html.inlinePngImg`, `Email.Html.inlineJpegImg`, or `Email.Html.inlineGifImg` instead.
+
+-}
+addAttachments : Dict String { content : Bytes, mimeType : String } -> PostmarkSend -> PostmarkSend
+addAttachments attachments email =
+    { email
+        | attachments =
+            Dict.union
+                (Dict.map
+                    (\_ attachment ->
+                        { content = VendoredBase64.fromBytes attachment.content |> Maybe.withDefault ""
+                        , mimeType = attachment.mimeType
+                        }
+                    )
+                    attachments
+                )
+                email.attachments
+    }
 
 
 emailsToString : List.Nonempty.Nonempty { name : String, email : EmailAddress } -> String
