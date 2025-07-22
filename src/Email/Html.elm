@@ -1,7 +1,7 @@
 module Email.Html exposing
     ( a, b, br, div, font, h1, h2, h3, h4, h5, h6, hr, img, label, li, node, ol, p, span, strong, table, td, text, th, tr, u, ul, Attribute, Html
     , inlineGifImg, inlineJpgImg, inlinePngImg
-    , toHtml
+    , toHtml, toString
     )
 
 {-| Only html tags that are supported by major all email clients are listed here.
@@ -27,7 +27,7 @@ Open an issue on github if something is missing or incorrectly included.
 
 # Convert
 
-@docs toHtml
+@docs toHtml, toString
 
 -}
 
@@ -46,11 +46,21 @@ type alias Attribute =
     Internal.Attribute
 
 
-{-| Convert a [`Email.Html.Html`](#Html) into normal a [`Html`](https://package.elm-lang.org/packages/elm/html/latest/Html). Useful if you want to preview your email content.
+{-| Convert [`Email.Html.Html`](#Html) into normal a [`Html`](https://package.elm-lang.org/packages/elm/html/latest/Html). Useful if you want to preview your email content.
 -}
 toHtml : Html -> Html.Html msg
 toHtml =
     Internal.toHtml
+
+
+{-| Convert [`Email.Html.Html`](#Html) into normal html text.
+
+    Email.Html.toString myHtml --> "<div>Hello!</div>"
+
+-}
+toString : Html -> String
+toString html =
+    Internal.toString html |> Tuple.first
 
 
 {-| This allows you to create html tags not included in this module (at the risk of it not rendering correctly in some email clients).
