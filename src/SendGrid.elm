@@ -166,13 +166,7 @@ htmlEmail config =
             , to = List.Nonempty.fromElement recipient
             , content = NonemptyString 'H' "i!"
             , nameOfSender = "test name"
-            , emailAddressOfSender =
-                -- this-can-be-anything@test.com
-                { localPart = "this-can-be-anything"
-                , tags = []
-                , domain = "test"
-                , tld = [ "com" ]
-                }
+            , emailAddressOfSender = senderEmailAddress
             }
 
 -}
