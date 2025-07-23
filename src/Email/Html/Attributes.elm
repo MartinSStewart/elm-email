@@ -1,4 +1,4 @@
-module Email.Html.Attributes exposing (alt, attribute, backgroundColor, border, borderBottom, borderBottomColor, borderBottomStyle, borderBottomWidth, borderColor, borderLeft, borderLeftColor, borderLeftStyle, borderLeftWidth, borderRadius, borderRight, borderRightColor, borderRightStyle, borderRightWidth, borderStyle, borderTop, borderTopColor, borderWidth, color, fontFamily, fontSize, fontStyle, fontVariant, height, href, letterSpacing, lineHeight, padding, paddingBottom, paddingLeft, paddingRight, paddingTop, src, style, textAlign, verticalAlign, width)
+module Email.Html.Attributes exposing (alt, attribute, Attribute, backgroundColor, border, borderBottom, borderBottomColor, borderBottomStyle, borderBottomWidth, borderColor, borderLeft, borderLeftColor, borderLeftStyle, borderLeftWidth, borderRadius, borderRight, borderRightColor, borderRightStyle, borderRightWidth, borderStyle, borderTop, borderTopColor, borderWidth, color, fontFamily, fontSize, fontStyle, fontVariant, height, href, letterSpacing, lineHeight, padding, paddingBottom, paddingLeft, paddingRight, paddingTop, src, style, textAlign, verticalAlign, width)
 
 {-| Only html attributes that are supported by all major email clients are listed here.
 If you need something not that's included (and potentially not universally supported) use [`attribute`](#attribute) or [`style`](#style).
@@ -13,11 +13,17 @@ Open an issue on github if something is missing or incorrectly included.
 
 # Attributes and styles
 
-@docs alt, attribute, backgroundColor, border, borderBottom, borderBottomColor, borderBottomStyle, borderBottomWidth, borderColor, borderLeft, borderLeftColor, borderLeftStyle, borderLeftWidth, borderRadius, borderRight, borderRightColor, borderRightStyle, borderRightWidth, borderStyle, borderTop, borderTopColor, borderWidth, color, fontFamily, fontSize, fontStyle, fontVariant, height, href, letterSpacing, lineHeight, padding, paddingBottom, paddingLeft, paddingRight, paddingTop, src, style, textAlign, verticalAlign, width
+@docs alt, attribute, Attribute, backgroundColor, border, borderBottom, borderBottomColor, borderBottomStyle, borderBottomWidth, borderColor, borderLeft, borderLeftColor, borderLeftStyle, borderLeftWidth, borderRadius, borderRight, borderRightColor, borderRightStyle, borderRightWidth, borderStyle, borderTop, borderTopColor, borderWidth, color, fontFamily, fontSize, fontStyle, fontVariant, height, href, letterSpacing, lineHeight, padding, paddingBottom, paddingLeft, paddingRight, paddingTop, src, style, textAlign, verticalAlign, width
 
 -}
 
 import Internal exposing (Attribute(..))
+
+
+{-| An HTML attribute
+-}
+type alias Attribute =
+    Internal.Attribute
 
 
 {-| Use this if there's a style you want to add that isn't present in this module.

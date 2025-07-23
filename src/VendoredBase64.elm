@@ -358,13 +358,14 @@ bitsToChars bits missing =
 
         r =
             unsafeToChar (Bitwise.and (Bitwise.shiftRightZfBy 6 bits) lowest6BitsMask)
-
-        s =
-            unsafeToChar (Bitwise.and bits lowest6BitsMask)
     in
     case missing of
         -- case `0` is the most common, so put it first.
         0 ->
+            let
+                s =
+                    unsafeToChar (Bitwise.and bits lowest6BitsMask)
+            in
             String.cons p (String.cons q (String.cons r (String.fromChar s)))
 
         1 ->

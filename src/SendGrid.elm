@@ -87,31 +87,23 @@ encodeNonemptyList encoder list =
 
 {-| Create an email that contains html.
 
-    import Email
-    import Email.Html
+    import EmailAddress
     import List.Nonempty
+    import Sendgrid
     import String.Nonempty exposing (NonemptyString)
 
     {-| An email to be sent to a recipient's email address.
     -}
-    email : Email.Email -> SendGrid.Email
-    email recipient =
-        SendGrid.htmlEmail
+    email : (Result SendGrid.Error () -> msg) -> EmailAddress -> SendGrid.ApiKey -> Cmd msg
+    email msg recipient apiKey =
+        SendGrid.textEmail
             { subject = NonemptyString 'S' "ubject"
             , to = List.Nonempty.fromElement recipient
-            , content =
-                Email.Html.div
-                    []
-                    [ Email.Html.text "Hi!" ]
-            , nameOfSender = "test name"
-            , emailAddressOfSender =
-                -- this-can-be-anything@test.com
-                { localPart = "this-can-be-anything"
-                , tags = []
-                , domain = "test"
-                , tld = [ "com" ]
-                }
+            , content = NonemptyString 'H' "i!"
+            , nameOfSender = "Sender Name"
+            , emailAddressOfSender = senderEmailAddress
             }
+            |> SendGrid.sendEmail msg apiKey
 
 Note that email clients are quite limited in what html features are supported!
 To avoid accidentally using html that's unsupported by some email clients, the `Email.Html` and `Email.Html.Attributes` modules only define tags and attributes with universal support.
@@ -153,13 +145,14 @@ htmlEmail config =
 
 {-| Create an email that only contains plain text.
 
-    import Email
+    import EmailAddress
     import List.Nonempty
+    import Sendgrid
     import String.Nonempty exposing (NonemptyString)
 
     {-| An email to be sent to a recipient's email address.
     -}
-    email : Email.Email -> SendGrid.Email
+    email : EmailAddress -> SendGrid.Email
     email recipient =
         SendGrid.textEmail
             { subject = NonemptyString 'S' "ubject"
@@ -392,6 +385,7 @@ sendEmailTask (ApiKey apiKey_) email_ =
         }
 
 
+sendGridApiUrl : String
 sendGridApiUrl =
     "https://api.sendgrid.com/v3/mail/send"
 

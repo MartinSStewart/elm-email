@@ -1,14 +1,14 @@
-This package lets you create and send emails with multiple different email services. Currently [SendGrid](https://sendgrid.com/) and [Postmark](https://account.postmarkapp.com) are supported.
+This package lets you create and send emails using multiple different email services. Currently [SendGrid](https://sendgrid.com/) and [Postmark](https://account.postmarkapp.com) are supported.
 
 *Note that you cannot use this package to send emails from a browser.
 You'll be blocked by CORS.
-You need to run this server-side or from a stand alone application.*
+You need to run this server-side or from a stand-alone application.*
 
 ### Example code
 
 Once you've completed the previous step you can write something like this to send out emails (again, this will not work in a browser client due to CORS).
 
-```
+```elm
 import SendGrid
 import String.Nonempty exposing (NonemptyString)
 import List.Nonempty
@@ -21,7 +21,7 @@ email msg recipient apiKey =
         { subject = NonemptyString 'S' "ubject" 
         , to = List.Nonempty.fromElement recipient
         , content = NonemptyString 'H' "i!"
-        , nameOfSender = "test name"
+        , nameOfSender = "Sender Name"
         , emailAddressOfSender = senderEmailAddress
         }
         |> SendGrid.sendEmail msg apiKey

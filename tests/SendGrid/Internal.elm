@@ -1,11 +1,10 @@
-module SendGrid.Internal exposing (..)
+module SendGrid.Internal exposing (suite)
 
 import Email.Html
 import Email.Html.Attributes
 import Expect exposing (Expectation)
-import Fuzz exposing (Fuzzer, int, list, string)
 import Internal
-import Test exposing (..)
+import Test exposing (Test, describe, test)
 
 
 suite : Test
