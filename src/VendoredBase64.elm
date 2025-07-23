@@ -1,26 +1,11 @@
 module VendoredBase64 exposing (fromBytes, toBytes)
 
-{-| Vendored from <https://package.elm-lang.org/packages/danfishgold/base64-bytes/1.1.0/>
-
-
-# Conversion
-
-@docs fromBytes, toBytes
-
--}
-
 import Bitwise
 import Bytes exposing (Bytes, Endianness(..))
 import Bytes.Decode as Decode
 import Bytes.Encode as Encode exposing (Encoder)
 
 
-{-| Convert a Base64 string to bytes.
-If you want more control over the process, you should use [`encoder`](#encoder).
-
-This function fails (returns `Nothing`) if you give it an invalid Base64 sequence.
-
--}
 toBytes : String -> Maybe Bytes
 toBytes string =
     Maybe.map Encode.encode (encoder string)
@@ -234,14 +219,6 @@ unsafeConvertChar char =
                 -1
 
 
-{-| Convert bytes to a Base64 string.
-If you want more control over the process, you should use [`decoder`](#decoder).
-
-This function should never return `Nothing`, but it uses
-[`Bytes.Decode.decode`](https://package.elm-lang.org/packages/elm/bytes/latest/Bytes-Decode#decode),
-which returns a `Maybe String`.
-
--}
 fromBytes : Bytes -> Maybe String
 fromBytes bytes =
     Decode.decode (decoder (Bytes.width bytes)) bytes

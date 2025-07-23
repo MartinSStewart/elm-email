@@ -11,6 +11,10 @@ when inside the directory containing this file.
 
 -}
 
+
+import Docs.ReviewAtDocs
+import Docs.ReviewLinksAndSections
+import Docs.UpToDateReadmeLinks
 import NoConfusingPrefixOperator
 import NoExposingEverything
 import NoImportingEverything
@@ -32,4 +36,7 @@ config =
     , NoMissingTypeAnnotation.rule
     , NoMissingTypeExpose.rule
     , NoPrematureLetComputation.rule
+    , Docs.ReviewAtDocs.rule
+    , Docs.ReviewLinksAndSections.rule
+    , Docs.UpToDateReadmeLinks.rule
     ]
