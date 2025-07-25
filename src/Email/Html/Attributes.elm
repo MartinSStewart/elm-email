@@ -18,8 +18,7 @@ Open an issue on github if something is missing or incorrectly included.
 -}
 
 import Email.Html exposing (Attribute)
-import Html
-import Internal exposing (Attribute(..))
+import Internal
 
 
 {-| Use this if there's a style you want to add that isn't present in this module.
@@ -27,7 +26,7 @@ Note that there's a risk that it isn't supported by some email clients.
 -}
 style : String -> String -> Attribute
 style =
-    StyleAttribute
+    Internal.StyleAttribute
 
 
 {-| Use this if there's a attribute you want to add that isn't present in this module.
@@ -35,250 +34,250 @@ Note that there's a risk that it isn't supported by some email clients.
 -}
 attribute : String -> String -> Attribute
 attribute =
-    Attribute
+    Internal.Attribute
 
 
 {-| -}
 backgroundColor : String -> Attribute
 backgroundColor =
-    StyleAttribute "background-color"
+    Internal.StyleAttribute "background-color"
 
 
 {-| -}
 border : String -> Attribute
 border =
-    StyleAttribute "border"
+    Internal.StyleAttribute "border"
 
 
 {-| -}
 borderRadius : String -> Attribute
 borderRadius =
-    StyleAttribute "border-radius"
+    Internal.StyleAttribute "border-radius"
 
 
 {-| -}
 borderBottom : String -> Attribute
 borderBottom =
-    StyleAttribute "border-bottom"
+    Internal.StyleAttribute "border-bottom"
 
 
 {-| -}
 borderBottomColor : String -> Attribute
 borderBottomColor =
-    StyleAttribute "border-bottom-color"
+    Internal.StyleAttribute "border-bottom-color"
 
 
 {-| -}
 borderBottomStyle : String -> Attribute
 borderBottomStyle =
-    StyleAttribute "border-bottom-style"
+    Internal.StyleAttribute "border-bottom-style"
 
 
 {-| -}
 borderBottomWidth : String -> Attribute
 borderBottomWidth =
-    StyleAttribute "border-bottom-width"
+    Internal.StyleAttribute "border-bottom-width"
 
 
 {-| -}
 borderColor : String -> Attribute
 borderColor =
-    StyleAttribute "border-color"
+    Internal.StyleAttribute "border-color"
 
 
 {-| -}
 borderLeft : String -> Attribute
 borderLeft =
-    StyleAttribute "border-left"
+    Internal.StyleAttribute "border-left"
 
 
 {-| -}
 borderLeftColor : String -> Attribute
 borderLeftColor =
-    StyleAttribute "border-left-color"
+    Internal.StyleAttribute "border-left-color"
 
 
 {-| -}
 borderLeftStyle : String -> Attribute
 borderLeftStyle =
-    StyleAttribute "border-left-style"
+    Internal.StyleAttribute "border-left-style"
 
 
 {-| -}
 borderLeftWidth : String -> Attribute
 borderLeftWidth =
-    StyleAttribute "border-left-width"
+    Internal.StyleAttribute "border-left-width"
 
 
 {-| -}
 borderRight : String -> Attribute
 borderRight =
-    StyleAttribute "border-right"
+    Internal.StyleAttribute "border-right"
 
 
 {-| -}
 borderRightColor : String -> Attribute
 borderRightColor =
-    StyleAttribute "border-right-color"
+    Internal.StyleAttribute "border-right-color"
 
 
 {-| -}
 borderRightStyle : String -> Attribute
 borderRightStyle =
-    StyleAttribute "border-right-style"
+    Internal.StyleAttribute "border-right-style"
 
 
 {-| -}
 borderRightWidth : String -> Attribute
 borderRightWidth =
-    StyleAttribute "border-right-width"
+    Internal.StyleAttribute "border-right-width"
 
 
 {-| -}
 borderStyle : String -> Attribute
 borderStyle =
-    StyleAttribute "border-style"
+    Internal.StyleAttribute "border-style"
 
 
 {-| -}
 borderTop : String -> Attribute
 borderTop =
-    StyleAttribute "border-top"
+    Internal.StyleAttribute "border-top"
 
 
 {-| -}
 borderTopColor : String -> Attribute
 borderTopColor =
-    StyleAttribute "border-top-color"
+    Internal.StyleAttribute "border-top-color"
 
 
 {-| -}
 borderWidth : String -> Attribute
 borderWidth =
-    StyleAttribute "border-width"
+    Internal.StyleAttribute "border-width"
 
 
 {-| -}
 color : String -> Attribute
 color =
-    StyleAttribute "color"
+    Internal.StyleAttribute "color"
 
 
 {-| -}
 width : String -> Attribute
 width =
-    StyleAttribute "width"
+    Internal.StyleAttribute "width"
 
 
 {-| -}
 maxWidth : String -> Attribute
 maxWidth =
-    StyleAttribute "max-width"
+    Internal.StyleAttribute "max-width"
 
 
 {-| -}
 minWidth : String -> Attribute
 minWidth =
-    StyleAttribute "min-width"
+    Internal.StyleAttribute "min-width"
 
 
 {-| -}
 height : String -> Attribute
 height =
-    StyleAttribute "height"
+    Internal.StyleAttribute "height"
 
 
 {-| -}
 padding : String -> Attribute
 padding =
-    StyleAttribute "padding"
+    Internal.StyleAttribute "padding"
 
 
 {-| -}
 paddingLeft : String -> Attribute
 paddingLeft =
-    StyleAttribute "padding-left"
+    Internal.StyleAttribute "padding-left"
 
 
 {-| -}
 paddingRight : String -> Attribute
 paddingRight =
-    StyleAttribute "padding-right"
+    Internal.StyleAttribute "padding-right"
 
 
 {-| -}
 paddingBottom : String -> Attribute
 paddingBottom =
-    StyleAttribute "padding-bottom"
+    Internal.StyleAttribute "padding-bottom"
 
 
 {-| -}
 paddingTop : String -> Attribute
 paddingTop =
-    StyleAttribute "padding-top"
+    Internal.StyleAttribute "padding-top"
 
 
 {-| -}
 lineHeight : String -> Attribute
 lineHeight =
-    StyleAttribute "line-height"
+    Internal.StyleAttribute "line-height"
 
 
 {-| -}
 fontSize : String -> Attribute
 fontSize =
-    StyleAttribute "font-size"
+    Internal.StyleAttribute "font-size"
 
 
 {-| -}
 fontFamily : String -> Attribute
 fontFamily =
-    StyleAttribute "font-family"
+    Internal.StyleAttribute "font-family"
 
 
 {-| -}
 fontStyle : String -> Attribute
 fontStyle =
-    StyleAttribute "font-style"
+    Internal.StyleAttribute "font-style"
 
 
 {-| -}
 fontVariant : String -> Attribute
 fontVariant =
-    StyleAttribute "font-variant"
+    Internal.StyleAttribute "font-variant"
 
 
 {-| -}
 letterSpacing : String -> Attribute
 letterSpacing =
-    StyleAttribute "letter-spacing"
+    Internal.StyleAttribute "letter-spacing"
 
 
 {-| -}
 textAlign : String -> Attribute
 textAlign =
-    StyleAttribute "text-align"
+    Internal.StyleAttribute "text-align"
 
 
 {-| -}
 src : String -> Attribute
 src =
-    Attribute "src"
+    Internal.Attribute "src"
 
 
 {-| -}
 alt : String -> Attribute
 alt =
-    Attribute "alt"
+    Internal.Attribute "alt"
 
 
 {-| -}
 href : String -> Attribute
 href =
-    Attribute "href"
+    Internal.Attribute "href"
 
 
 {-| -}
 verticalAlign : String -> Attribute
 verticalAlign =
-    Attribute "vertical-align"
+    Internal.Attribute "vertical-align"

@@ -1,7 +1,6 @@
 module Postmark exposing
-    ( apiKey, ApiKey, sendEmail, sendEmails, sendEmailTask, sendEmailsTask, PostmarkEmailBody(..), MessageStream(..), PostmarkError_, SendEmailError(..), SendEmailsError(..)
+    ( apiKey, ApiKey, sendEmail, sendEmails, sendEmailTask, sendEmailsTask, Email, EmailBody(..), MessageStream(..), PostmarkError_, SendEmailError(..), SendEmailsError(..)
     , Attachments, noAttachments, attachments
-    , Email
     )
 
 {-|
@@ -9,10 +8,10 @@ module Postmark exposing
 
 # Sending emails
 
-@docs apiKey, ApiKey, sendEmail, sendEmails, sendEmailTask, sendEmailsTask, PostmarkEmail, PostmarkEmailBody, MessageStream, PostmarkError_, SendEmailError, SendEmailsError
+@docs apiKey, ApiKey, sendEmail, sendEmails, sendEmailTask, sendEmailsTask, Email, EmailBody, MessageStream, PostmarkError_, SendEmailError, SendEmailsError
 
 
-# Attachments
+# Email attachments
 
 @docs Attachments, noAttachments, attachments
 
@@ -60,7 +59,7 @@ apiKey apiKey_ =
     You can still use `Email.Html.node` and `Email.Html.Attributes.attribute` if you want something that might not be universally supported though.
 
 -}
-type PostmarkEmailBody
+type EmailBody
     = HtmlBody Email.Html.Html
     | TextBody String
     | HtmlAndTextBody Email.Html.Html String
@@ -81,7 +80,7 @@ type alias Email =
     { from : { name : String, email : EmailAddress }
     , to : Nonempty { name : String, email : EmailAddress }
     , subject : NonemptyString
-    , body : PostmarkEmailBody
+    , body : EmailBody
     , messageStream : MessageStream
     , attachments : Attachments
     }
