@@ -1,5 +1,5 @@
 module Email.Html exposing
-    ( a, b, br, div, font, h1, h2, h3, h4, h5, h6, hr, img, label, li, node, ol, p, span, strong, table, td, text, th, tr, u, ul, Html
+    ( a, b, br, div, font, h1, h2, h3, h4, h5, h6, hr, img, label, li, node, ol, p, span, strong, table, td, text, th, tr, u, ul, Html, Attribute
     , inlineGifImg, inlineJpgImg, inlinePngImg
     , toHtml, toString
     )
@@ -17,7 +17,7 @@ Open an issue on github if something is missing or incorrectly included.
 
 # Html tags
 
-@docs a, b, br, div, font, h1, h2, h3, h4, h5, h6, hr, img, label, li, node, ol, p, span, strong, table, td, text, th, tr, u, ul, Html
+@docs a, b, br, div, font, h1, h2, h3, h4, h5, h6, hr, img, label, li, node, ol, p, span, strong, table, td, text, th, tr, u, ul, Html, Attribute
 
 
 # Inline images
@@ -32,7 +32,6 @@ Open an issue on github if something is missing or incorrectly included.
 -}
 
 import Bytes exposing (Bytes)
-import Email.Html.Attributes exposing (Attribute)
 import Html
 import Internal
 
@@ -40,6 +39,12 @@ import Internal
 {-| -}
 type alias Html =
     Internal.Html
+
+
+{-| An HTML attribute
+-}
+type alias Attribute =
+    Internal.Attribute
 
 
 {-| Convert [`Email.Html.Html`](#Html) into normal a [`Html`](https://package.elm-lang.org/packages/elm/html/latest/Html). Useful if you want to preview your email content.

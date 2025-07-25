@@ -4,27 +4,74 @@ This package lets you create and send emails using multiple different email serv
 You'll be blocked by CORS.
 You need to run this server-side or from a stand-alone application.*
 
-### Example code
+### Examples
 
-Once you've completed the previous step you can write something like this to send out emails (again, this will not work in a browser client due to CORS).
+Sending an text email with SendGrid
 
 ```elm
-import SendGrid
-import String.Nonempty exposing (NonemptyString)
-import List.Nonempty
 
 -- Make sure to install `MartinSStewart/elm-nonempty-string` and `mgold/elm-nonempty-list`.
 
-email : (Result SendGrid.Error () -> msg) -> EmailAddress -> SendGrid.ApiKey -> Cmd msg
-email msg recipient apiKey =
+import EmailAddress exposing (EmailAddress)
+import List.Nonempty
+import SendGrid
+import String.Nonempty exposing (NonemptyString(..))
+
+simpleEmail : (Result SendGrid.Error () -> msg) -> EmailAddress -> SendGrid.ApiKey -> Cmd msg
+simpleEmail msg recipient apiKey =
     SendGrid.textEmail
-        { subject = NonemptyString 'S' "ubject" 
+        { subject = NonemptyString 'H' "ello!" 
         , to = List.Nonempty.fromElement recipient
         , content = NonemptyString 'H' "i!"
         , nameOfSender = "Sender Name"
         , emailAddressOfSender = senderEmailAddress
         }
         |> SendGrid.sendEmail msg apiKey
+```
+
+Sending a html email with an attachment with Postmark
+
+```elm
+
+-- Make sure to install `MartinSStewart/elm-nonempty-string` and `mgold/elm-nonempty-list`.
+
+import Email.Html
+import EmailAddress exposing (EmailAddress)
+import List.Nonempty exposing (Nonempty)
+import Postmark
+import SendGrid
+import String.Nonempty exposing (NonemptyString(..))
+
+emailsWithAttachments :
+    (Result Postmark.SendEmailsError () -> msg)
+    -> Nonempty { name : String, email : EmailAddress }
+    -> Cmd msg
+emailsWithAttachments msg recipients =
+    let
+        attachments : Postmark.Attachments
+        attachments =
+            Postmark.attachments myAttachments
+    in
+    Postmark.sendEmails
+        msg
+        apiKey
+        (List.Nonempty.map
+            (\recipient ->
+                { from = { name = senderName, email = senderEmail }
+                , to = recipient
+                , subject = NonemptyString 'H' "ello world!"
+                , body =
+                    Postmark.HtmlAndTextBody
+                        (Email.Html.b [] [ Email.Html.text "Hello world!" ])
+                        "Hello world!"
+                , messageStream = Postmark.BroadcastEmail
+                , attachments = attachments
+                }
+            )
+            recipients
+        )
+
+
 ```
 
 ### Postmark tool
