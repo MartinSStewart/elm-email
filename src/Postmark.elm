@@ -17,6 +17,7 @@ module Postmark exposing
 
 -}
 
+import Base64
 import Bytes exposing (Bytes)
 import Dict exposing (Dict)
 import Email.Html
@@ -28,7 +29,6 @@ import Json.Encode as E
 import List.Nonempty exposing (Nonempty(..))
 import String.Nonempty exposing (NonemptyString)
 import Task exposing (Task)
-import VendoredBase64
 
 
 endpoint : String
@@ -70,7 +70,7 @@ type EmailBody
     { from = { name = "ascii-collab", email = asciiCollabEmail }
     , to = List.Nonempty.fromElement { name = "", email = recipient }
     , subject = NonemptyString 'H' "ello!"
-    , body = Postmark.BodyText "Hello! Here's your login code 123123"
+    , body = Postmark.TextBody "Hello! Here's your login code 123123"
     , messageStream = Postmark.TransactionalEmail
     , attachments = Postmark.noAttachments
     }
@@ -111,7 +111,7 @@ attachments : Dict String { content : Bytes, mimeType : String } -> Attachments
 attachments dict =
     Dict.map
         (\_ a ->
-            { content = VendoredBase64.fromBytes a.content |> Maybe.withDefault ""
+            { content = Base64.fromBytes a.content |> Maybe.withDefault ""
             , mimeType = a.mimeType
             }
         )
@@ -154,25 +154,23 @@ type SendEmailsError
     | BadUrl_ String
 
 
-{-| Send an email to someone
+{-| Send an email (but as a `Task` instead of a `Cmd`)
 
-    import Dict
-    import EmailAddress
-    import List.Nonempty
+    import EmailAddress exposing (EmailAddress)
+    import List.Nonempty exposing (Nonempty)
     import Postmark
-    import String.Nonempty exposing (NonemptyString)
+    import Task exposing (Task)
 
     {-| An email to be sent to a recipient's email address.
     -}
-    email : EmailAddress -> Task SendEmailError Msg
+    email : EmailAddress -> Task Postmark.SendEmailError ()
     email recipient =
         Postmark.sendEmailTask
-            SentEmail
             postmarkApiKey
             { from = { name = "ascii-collab", email = asciiCollabEmail }
             , to = List.Nonempty.fromElement { name = "", email = recipient }
             , subject = subject
-            , body = Postmark.BodyText "Hello! Here's your login code 123123"
+            , body = Postmark.TextBody "Hello! Here's your login code: 123123"
             , messageStream = Postmark.TransactionalEmail
             , attachments = Postmark.noAttachments
             }
@@ -210,7 +208,7 @@ encodeEmail d =
                 |> List.map
                     (\( filename, { content, imageType } ) ->
                         ( filename
-                        , { content = VendoredBase64.fromBytes content |> Maybe.withDefault ""
+                        , { content = Base64.fromBytes content |> Maybe.withDefault ""
                           , mimeType = Internal.mimeType imageType
                           }
                         )
@@ -279,13 +277,11 @@ sendEmailsTask (ApiKey token) d =
         }
 
 
-{-| Send an email to someone
+{-| Send an email
 
-    import Dict
-    import EmailAddress
+    import EmailAddress exposing (EmailAddress)
     import List.Nonempty
     import Postmark
-    import String.Nonempty exposing (NonemptyString)
 
     {-| An email to be sent to a recipient's email address.
     -}
@@ -297,7 +293,7 @@ sendEmailsTask (ApiKey token) d =
             { from = { name = "ascii-collab", email = asciiCollabEmail }
             , to = List.Nonempty.fromElement { name = "", email = recipient }
             , subject = subject
-            , body = Postmark.BodyText "Hello! Here's your login code 123123"
+            , body = Postmark.TextBody "Hello! Here's your login code 123123"
             , messageStream = Postmark.TransactionalEmail
             , attachments = Postmark.noAttachments
             }

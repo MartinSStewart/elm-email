@@ -6,6 +6,7 @@ module SendGrid exposing (ApiKey, apiKey, textEmail, htmlEmail, addCc, addBcc, a
 
 -}
 
+import Base64
 import Bytes exposing (Bytes)
 import Dict exposing (Dict)
 import Email.Html
@@ -17,7 +18,6 @@ import Json.Encode as JE
 import List.Nonempty exposing (Nonempty)
 import String.Nonempty exposing (NonemptyString)
 import Task exposing (Task)
-import VendoredBase64
 
 
 type Content
@@ -267,7 +267,7 @@ encodeDisposition disposition =
 encodeAttachment : ( String, Attachment ) -> JE.Value
 encodeAttachment ( filename, attachment ) =
     JE.object
-        (( "content", VendoredBase64.fromBytes attachment.content |> Maybe.withDefault "" |> JE.string )
+        (( "content", Base64.fromBytes attachment.content |> Maybe.withDefault "" |> JE.string )
             :: ( "mimeType", JE.string attachment.mimeType )
             :: ( "filename", JE.string filename )
             :: ( "disposition", encodeDisposition attachment.disposition )
