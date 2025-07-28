@@ -6,7 +6,7 @@ You need to run this server-side or from a stand-alone application.*
 
 ### Examples
 
-Sending an text email with SendGrid
+Sending a plain text email with SendGrid
 
 ```elm
 
