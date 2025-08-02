@@ -1,10 +1,12 @@
+# elm-email
+
 This package lets you create and send emails using multiple different email services. Currently [SendGrid](https://sendgrid.com/) and [Postmark](https://account.postmarkapp.com) are supported.
 
 *Note that you cannot use this package to send emails from a browser.
 You'll be blocked by CORS.
 You need to run this server-side or from a stand-alone application.*
 
-### Examples
+## Examples
 
 Sending a plain text email with SendGrid
 
@@ -74,6 +76,6 @@ emailsWithAttachments msg recipients =
 
 ```
 
-### Postmark tool
+## Postmark tool
 
 If you are using Postmark, you can use this tool I've made https://postmark-email-client.lamdera.app/ to test sending emails and seeing what they look like for the end user.
