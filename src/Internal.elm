@@ -328,6 +328,14 @@ decodeEmails =
                                 if trimmed == "" then
                                     Nothing
 
+                                else if String.endsWith ">" trimmed then
+                                    case String.split "<" (String.dropRight 1 trimmed) |> List.reverse |> List.head of
+                                        Just email ->
+                                            Just ( trimmed, EmailAddress.fromString email )
+
+                                        Nothing ->
+                                            Nothing
+
                                 else
                                     Just ( trimmed, EmailAddress.fromString trimmed )
                             )
