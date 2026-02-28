@@ -443,6 +443,7 @@ decodeEmails =
 jsonResolver : Http.Resolver SendEmailError ()
 jsonResolver =
     let
+        decodeBody : Http.Metadata -> String -> Result SendEmailError ()
         decodeBody metadata body =
             case D.decodeString decodePostmarkSendResponse body of
                 Ok json ->
